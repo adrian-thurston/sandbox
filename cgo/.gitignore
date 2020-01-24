@@ -1,0 +1,4 @@
+/cgo
+/rust/flux.o
+/fromgo/libflux.a
+/fromgo/uniq.c
