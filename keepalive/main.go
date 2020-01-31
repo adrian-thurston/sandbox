@@ -44,7 +44,7 @@ func main() {
 	d, err := syscall.Open( "fifo", syscall.O_RDONLY, 0 )
 
 	if ( err != nil ) {
-			fmt.Println( "open FAILED" );
+		fmt.Println( "open FAILED" );
 	} else {
 		fmt.Println( "fifo is open" );
 		p := &File{d}
