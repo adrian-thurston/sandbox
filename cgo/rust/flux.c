@@ -10,5 +10,5 @@ void flux()
 	 * Already tried: make it into a shared library and link with that. Go will
 	 * still link it statically and use the same rebuilding rules.
 	 */
-	printf( "flux() inside archive 15\n");
+	printf( "flux() inside archive 17\n");
 }

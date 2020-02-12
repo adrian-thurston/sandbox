@@ -1,0 +1,7 @@
+#!/bin/bash
+#
+#
+
+if [ "$1" = --cflags ]; then
+	echo '-DUNIQ="\"cgo-rust-rebuild\""'
+fi
