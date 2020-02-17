@@ -29,17 +29,17 @@ impl Default for Scanner
 
 impl Scanner
 {
-    fn peek( &mut self ) -> Token
+    fn peek( &self ) -> &Token
     {
         match &self.optional {
-            Some( token ) => { *token }
+            Some( token ) => { token }
             None => {
-                //let token = Token{ i: 2, j: 3 };
-                //self.optional = Some( token );
-                self.other
+                &self.other
             }
         }
     }
+
+    fn check( &self ) -> bool { self.optional.is_some() }
 
     fn destroy( &mut self )
     {
@@ -50,7 +50,11 @@ impl Scanner
 fn main() {
     let mut s = Scanner{ optional: Some( Token{ i: 1, j: 2 } ), other: Token{ i: 5, j: 6 } };
     let t = s.peek();
-    s.destroy();
+
+    if s.check() {
+        println!( "check ok" );
+    }
 
     println!( "{} {}", t.i, t.j );
+    s.destroy();
 }
