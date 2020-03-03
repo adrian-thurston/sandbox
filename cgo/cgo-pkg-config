@@ -2,6 +2,6 @@
 #
 #
 
-if [ "$1" = --cflags ]; then
-	echo '-DUNIQ="\"cgo-rust-rebuild\""'
-fi
+UNIQ=`head -c 16 /dev/urandom | xxd -ps`
+echo "const char *uniq = \"$UNIQ\";" > $HOME/devel/sandbox/cgo/fromgo/uniq.c
+
