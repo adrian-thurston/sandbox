@@ -1,5 +1,5 @@
 /Makefile
-/config.status
+/config.subst
 /config.reconf
 /bridge/bridge.go
 /bridge/hash.c

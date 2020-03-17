@@ -1,6 +1,7 @@
 LIBRUST = @LIBRUST@
+CARGO_FLAGS = @CARGO_FLAGS@
 
-all: build
+all: Makefile config.subst build
 
 bridge/hash.c: $(LIBRUST)/librust.a Makefile
 	@if test $< -nt $@ || test Makefile -nt $@; then \
@@ -11,13 +12,17 @@ bridge/hash.c: $(LIBRUST)/librust.a Makefile
 .PHONY: $(LIBRUST)/librust.a
 
 $(LIBRUST)/librust.a:
-	cd rust && cargo build
+	cd rust && cargo build $(CARGO_FLAGS)
 
-build: bridge/hash.c
+build: bridge/bridge.go bridge/hash.c 
 	go build
 
-Makefile: Makefile.in
-	./config.status
-
-configure: configure.in
+config.subst: configure
 	./config.reconf
+
+Makefile: Makefile.in
+	./config.subst
+
+bridge/bridge.go: bridge/bridge.go.in
+	./config.subst
+

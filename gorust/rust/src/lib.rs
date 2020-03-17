@@ -1,6 +1,6 @@
 #[no_mangle]
 pub unsafe extern "C" fn hello_from_rust() {
-    println!( "hello from rust" );
+    println!( "hello from rust, my friends" );
 }
 
 #[cfg(test)]

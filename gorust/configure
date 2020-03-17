@@ -1,30 +1,71 @@
 #!/bin/sh
 
+# Some base vars.
 SED_SUBST=""
 TOP_DIR=`pwd`
 
-LIBRUST="$TOP_DIR/rust/target/debug"
+#
+# Inspect the arguments/system and set build variables here.
+#
 
+TARGET_DIR=debug
+CARGO_FLAGS=""
+
+#
+# TODO: Proper arg parsing.
+#
+if [ "$1" = "--release" ]; then
+	CARGO_FLAGS="--release"
+	TARGET_DIR=release
+fi
+
+#
+# TODO: Check go version.
+#
+
+#
+# TODO: Check rust version
+#
+
+LIBRUST="$TOP_DIR/rust/target/$TARGET_DIR"
+
+# Every var we want available when rewriting the makefile, or when rewriting
+# files from the makefile (such as scripts), we must add as an entry into sed
+# subst.
 SED_SUBST="$SED_SUBST -e s|@TOP_DIR@|$TOP_DIR|g"
 SED_SUBST="$SED_SUBST -e s|@LIBRUST@|$LIBRUST|g"
+SED_SUBST="$SED_SUBST -e s|@CARGO_FLAGS@|$CARGO_FLAGS|g"
 
-test -f config.status && rm -f config.status
-
+#
+# Create the substitution script. This file is responsible for rewriting files,
+# includeing the Makefile, at configure time. We generate a script (as opposed
+# to running this directly) so that it can be available for the Makefile to run
+# whenever the inputs change.
+#
+test -f config.subst && rm -f config.subst
 {
+	echo "#!/bin/sh"
 	echo "cd $TOP_DIR"
 	echo "SED_SUBST=\"$SED_SUBST\""
 	echo "test -f Makefile && rm -f Makefile"
 	echo "echo \"SED_SUBST = \$SED_SUBST\" > Makefile"
 	echo "$TOP_DIR/sedsubst --append -w Makefile Makefile.in \$SED_SUBST"
 	echo "$TOP_DIR/sedsubst -w bridge/bridge.go bridge/bridge.go.in \$SED_SUBST"
-} > config.status
+} > config.subst
+chmod +x-w config.subst
 
-chmod +x-w config.status
-./config.status
-
+#
+# Create the reconfigure script. This allows us to re-run configure with the
+# same arguments from the makefile when the ./configure script changes.
+#
 test -f config.reconf && rm -f config.reconf
 {
+	echo "#!/bin/sh"
 	echo cd $TOP_DIR
-	echo ./configure 
+	echo ./configure $@
 } > config.reconf
 chmod +x-w config.reconf
+
+# Run substitution.
+./config.subst
+
