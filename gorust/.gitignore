@@ -1,4 +1,6 @@
 /Makefile
+/config.status
+/config.reconf
 /bridge/bridge.go
 /bridge/hash.c
 /gorust

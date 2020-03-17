@@ -1,18 +1,30 @@
 #!/bin/sh
 
-SRC_TOP=`pwd`
 SED_SUBST=""
+TOP_DIR=`pwd`
 
-LIBRUST="$SRC_TOP/rust/target/debug"
+LIBRUST="$TOP_DIR/rust/target/debug"
 
-SED_SUBST="$SED_SUBST -e s|@SRC_TOP@|$SRC_TOP|g"
+SED_SUBST="$SED_SUBST -e s|@TOP_DIR@|$TOP_DIR|g"
 SED_SUBST="$SED_SUBST -e s|@LIBRUST@|$LIBRUST|g"
 
-test -f Makefile && rm -f Makefile
+test -f config.status && rm -f config.status
+
 {
-	echo "SED_SUBST = $SED_SUBST"
-} > Makefile
+	echo "cd $TOP_DIR"
+	echo "SED_SUBST=\"$SED_SUBST\""
+	echo "test -f Makefile && rm -f Makefile"
+	echo "echo \"SED_SUBST = \$SED_SUBST\" > Makefile"
+	echo "$TOP_DIR/sedsubst --append -w Makefile Makefile.in \$SED_SUBST"
+	echo "$TOP_DIR/sedsubst -w bridge/bridge.go bridge/bridge.go.in \$SED_SUBST"
+} > config.status
 
-$SRC_TOP/sedsubst --append -w Makefile Makefile.in $SED_SUBST
-$SRC_TOP/sedsubst -w bridge/bridge.go bridge/bridge.go.in $SED_SUBST
+chmod +x-w config.status
+./config.status
 
+test -f config.reconf && rm -f config.reconf
+{
+	echo cd $TOP_DIR
+	echo ./configure 
+} > config.reconf
+chmod +x-w config.reconf

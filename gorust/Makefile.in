@@ -2,8 +2,8 @@ LIBRUST = @LIBRUST@
 
 all: build
 
-bridge/hash.c: $(LIBRUST)/librust.a
-	@if test $< -nt $@; then \
+bridge/hash.c: $(LIBRUST)/librust.a Makefile
+	@if test $< -nt $@ || test Makefile -nt $@; then \
 		echo calculating shasum $@; \
 		echo "const char *___shasum = \"`shasum $< | awk '{ print $$1; }'`\";"  > $@;  \
 	fi
@@ -17,4 +17,7 @@ build: bridge/hash.c
 	go build
 
 Makefile: Makefile.in
-	./configure
+	./config.status
+
+configure: configure.in
+	./config.reconf
