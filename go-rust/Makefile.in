@@ -1,0 +1,46 @@
+LIBRUST = @LIBRUST@
+CARGO_FLAGS = @CARGO_FLAGS@
+TOP_DIR = @TOP_DIR@
+
+#
+# Targets are organized top-down.
+#
+all: build
+
+# Ensure Makefile is rewritten when its source changes.
+Makefile: Makefile.in config.subst
+	./config.subst
+
+# Ensure configuration is redone when the configure script changes.
+config.subst: configure
+	./config.reconf
+
+#
+# Top level build. The dependency on hash.c cascades to building rust side.
+#
+build: bridge/bridge.go bridge/hash.c scripts/example
+	go build
+
+# Ensure Go bridge file is remade when it's source changes.
+bridge/bridge.go: bridge/bridge.go.in
+	./config.subst
+
+# Build the hash.c file from the rust library. Added a dependency on this
+# Makefile because the below rule is non-trivial and may change. Use test so
+# that we don't always touch the hash.c file. Since the librust.a target is
+# phony it will always run, which would always touch the hash.c file if we
+# don't guard its rebuild.
+bridge/hash.c: $(LIBRUST)/librust.a Makefile
+	@if test $< -nt $@ || test Makefile -nt $@; then \
+		echo calculating shasum $@; \
+		echo "const char *___shasum = \"`shasum $< | awk '{ print $$1; }'`\";"  > $@;  \
+	fi
+
+# Rust target always rebuilds. Let cargo decide for itself when to rebuild
+.PHONY: $(LIBRUST)/librust.a
+$(LIBRUST)/librust.a:
+	cd rust && cargo build $(CARGO_FLAGS)
+
+scripts/example: scripts/example.sh Makefile
+	@$(TOP_DIR)/sedsubst -w,+x $@ $< $(SED_SUBST)
+

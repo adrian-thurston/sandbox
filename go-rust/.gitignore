@@ -3,5 +3,6 @@
 /config.reconf
 /bridge/bridge.go
 /bridge/hash.c
-/gorust
+/go-rust
 /rust/target
+/scripts/example
