@@ -2,7 +2,6 @@
 
 # Some base vars.
 SED_SUBST=""
-
 TOP_DIR=`pwd`
 
 #
@@ -16,13 +15,14 @@ CARGO_FLAGS="--workspace"
 # TODO: Proper arg parsing.
 #
 
+# Internal args. Remove these from positional args.
 NO_SUBST=""
 if [ "$1" = "--no-subst" ]; then
 	NO_SUBST=yes
 	shift 1;
 fi
 
-
+# User args. Leave these in positional args.
 if [ "$1" = "--release" ]; then
 	CARGO_FLAGS="$CARGO_FLAGS --release"
 	TARGET_DIR=release
