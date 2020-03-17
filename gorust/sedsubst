@@ -1,0 +1,28 @@
+#/bin/sh
+#
+
+unset append
+if [ "$1" = "--append" ]; then
+	append=yes
+	shift 1
+fi
+
+mode=$1
+output=$2
+source=$3
+shift 3
+
+[ -f "$source" ] || { echo "error: sedsubst: $source not found"; exit 1; }
+
+echo "sedsubst: generating $output from $source"
+if [ "x$append" = x ]; then
+	test -f $output && rm -f $output
+fi
+
+if [ "$#" == 0 ]; then
+	cat $source >> $output
+else
+	sed $@ $source >> $output
+fi
+
+chmod $mode $output

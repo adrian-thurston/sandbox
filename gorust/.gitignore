@@ -1,2 +1,5 @@
+/Makefile
+/bridge/bridge.go
+/bridge/hash.c
 /gorust
 /rust/target

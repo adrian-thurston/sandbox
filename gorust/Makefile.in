@@ -1,0 +1,20 @@
+LIBRUST = @LIBRUST@
+
+all: build
+
+bridge/hash.c: $(LIBRUST)/librust.a
+	@if test $< -nt $@; then \
+		echo calculating shasum $@; \
+		echo "const char *___shasum = \"`shasum $< | awk '{ print $$1; }'`\";"  > $@;  \
+	fi
+
+.PHONY: $(LIBRUST)/librust.a
+
+$(LIBRUST)/librust.a:
+	cd rust && cargo build
+
+build: bridge/hash.c
+	go build
+
+Makefile: Makefile.in
+	./configure

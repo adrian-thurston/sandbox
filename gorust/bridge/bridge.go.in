@@ -1,6 +1,6 @@
 package Bridge
 
-// #cgo LDFLAGS: -lrust -L${SRCDIR}/../rust/target/debug
+// #cgo LDFLAGS: -lrust -L@LIBRUST@
 // #include "rust.h"
 import "C"
 

@@ -1,0 +1,18 @@
+#!/bin/sh
+
+SRC_TOP=`pwd`
+SED_SUBST=""
+
+LIBRUST="$SRC_TOP/rust/target/debug"
+
+SED_SUBST="$SED_SUBST -e s|@SRC_TOP@|$SRC_TOP|g"
+SED_SUBST="$SED_SUBST -e s|@LIBRUST@|$LIBRUST|g"
+
+test -f Makefile && rm -f Makefile
+{
+	echo "SED_SUBST = $SED_SUBST"
+} > Makefile
+
+$SRC_TOP/sedsubst --append -w Makefile Makefile.in $SED_SUBST
+$SRC_TOP/sedsubst -w bridge/bridge.go bridge/bridge.go.in $SED_SUBST
+
