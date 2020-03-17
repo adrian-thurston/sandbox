@@ -47,7 +47,7 @@ SED_SUBST="$SED_SUBST -e 's|@CARGO_FLAGS@|$CARGO_FLAGS|g'"
 
 #
 # Create the substitution script. This file is responsible for rewriting files,
-# includeing the Makefile, at configure time. We generate a script (as opposed
+# including the Makefile, at configure time. We generate a script (as opposed
 # to running this directly) so that it can be available for the Makefile to run
 # whenever the inputs change.
 #
@@ -61,10 +61,10 @@ test -f config.subst && rm -f config.subst
 	echo "SED_SUBST= $SED_SUBST"
 	echo ".PHONY: all"
 	echo "all:"
-	echo "	-@test -f Makefile && rm -f Makefile"
-	echo "	-@echo \"SED_SUBST = \$(SED_SUBST)\" > Makefile"
-	echo "	-@$TOP_DIR/sedsubst --append -w Makefile Makefile.in \$(SED_SUBST)"
-	echo "	-@$TOP_DIR/sedsubst -w bridge/bridge.go bridge/bridge.go.in \$(SED_SUBST)"
+	echo "	@if test -f Makefile; then rm -f Makefile; fi"
+	echo "	@echo \"SED_SUBST = \$(SED_SUBST)\" > Makefile"
+	echo "	@$TOP_DIR/sedsubst --append -w Makefile Makefile.in \$(SED_SUBST)"
+	echo "	@$TOP_DIR/sedsubst -w bridge/bridge.go bridge/bridge.go.in \$(SED_SUBST)"
 } > config.subst
 chmod +x-w config.subst
 
