@@ -22,7 +22,7 @@ fi
 if [ "$#" == 0 ]; then
 	cat $source >> $output
 else
-	sed $@ $source >> $output
+	sed "$@" $source >> $output
 fi
 
 chmod $mode $output

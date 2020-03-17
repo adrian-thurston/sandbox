@@ -15,7 +15,7 @@ CARGO_FLAGS=""
 # TODO: Proper arg parsing.
 #
 if [ "$1" = "--release" ]; then
-	CARGO_FLAGS="--release"
+	CARGO_FLAGS="--release --workspace"
 	TARGET_DIR=release
 fi
 
@@ -32,9 +32,9 @@ LIBRUST="$TOP_DIR/rust/target/$TARGET_DIR"
 # Every var we want available when rewriting the makefile, or when rewriting
 # files from the makefile (such as scripts), we must add as an entry into sed
 # subst.
-SED_SUBST="$SED_SUBST -e s|@TOP_DIR@|$TOP_DIR|g"
-SED_SUBST="$SED_SUBST -e s|@LIBRUST@|$LIBRUST|g"
-SED_SUBST="$SED_SUBST -e s|@CARGO_FLAGS@|$CARGO_FLAGS|g"
+SED_SUBST="$SED_SUBST -e 's|@TOP_DIR@|$TOP_DIR|g'"
+SED_SUBST="$SED_SUBST -e 's|@LIBRUST@|$LIBRUST|g'"
+SED_SUBST="$SED_SUBST -e 's|@CARGO_FLAGS@|$CARGO_FLAGS|g'"
 
 #
 # Create the substitution script. This file is responsible for rewriting files,
@@ -42,15 +42,20 @@ SED_SUBST="$SED_SUBST -e s|@CARGO_FLAGS@|$CARGO_FLAGS|g"
 # to running this directly) so that it can be available for the Makefile to run
 # whenever the inputs change.
 #
+# We use make for this script so that we do not need to BUILD up a SED_SUBST
+# argument in a sytax that is both valid sh and make, at the same time allowing
+# substitutions with spaces.
+#
 test -f config.subst && rm -f config.subst
 {
-	echo "#!/bin/sh"
-	echo "cd $TOP_DIR"
-	echo "SED_SUBST=\"$SED_SUBST\""
-	echo "test -f Makefile && rm -f Makefile"
-	echo "echo \"SED_SUBST = \$SED_SUBST\" > Makefile"
-	echo "$TOP_DIR/sedsubst --append -w Makefile Makefile.in \$SED_SUBST"
-	echo "$TOP_DIR/sedsubst -w bridge/bridge.go bridge/bridge.go.in \$SED_SUBST"
+	echo "#!/usr/bin/make -f"
+	echo "SED_SUBST= $SED_SUBST"
+	echo ".PHONY: all"
+	echo "all:"
+	echo "	@test -f Makefile && rm -f Makefile"
+	echo "	@echo \"SED_SUBST = \$(SED_SUBST)\" > Makefile"
+	echo "	@$TOP_DIR/sedsubst --append -w Makefile Makefile.in \$(SED_SUBST)"
+	echo "	@$TOP_DIR/sedsubst -w bridge/bridge.go bridge/bridge.go.in \$(SED_SUBST)"
 } > config.subst
 chmod +x-w config.subst
 
@@ -61,8 +66,8 @@ chmod +x-w config.subst
 test -f config.reconf && rm -f config.reconf
 {
 	echo "#!/bin/sh"
-	echo cd $TOP_DIR
-	echo ./configure $@
+	echo "cd $TOP_DIR"
+	echo "./configure $@"
 } > config.reconf
 chmod +x-w config.reconf
 
