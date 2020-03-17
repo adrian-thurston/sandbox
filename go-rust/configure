@@ -61,10 +61,10 @@ test -f config.subst && rm -f config.subst
 	echo "SED_SUBST= $SED_SUBST"
 	echo ".PHONY: all"
 	echo "all:"
-	echo "	@test -f Makefile && rm -f Makefile"
-	echo "	@echo \"SED_SUBST = \$(SED_SUBST)\" > Makefile"
-	echo "	@$TOP_DIR/sedsubst --append -w Makefile Makefile.in \$(SED_SUBST)"
-	echo "	@$TOP_DIR/sedsubst -w bridge/bridge.go bridge/bridge.go.in \$(SED_SUBST)"
+	echo "	-@test -f Makefile && rm -f Makefile"
+	echo "	-@echo \"SED_SUBST = \$(SED_SUBST)\" > Makefile"
+	echo "	-@$TOP_DIR/sedsubst --append -w Makefile Makefile.in \$(SED_SUBST)"
+	echo "	-@$TOP_DIR/sedsubst -w bridge/bridge.go bridge/bridge.go.in \$(SED_SUBST)"
 } > config.subst
 chmod +x-w config.subst
 
@@ -81,7 +81,7 @@ test -f config.reconf && rm -f config.reconf
 chmod +x-w config.reconf
 
 # Run substitution.
-if [ "x$NO_SUBST" == x ]; then
+if [ "x$NO_SUBST" = x ]; then
 	./config.subst
 fi
 

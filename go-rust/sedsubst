@@ -19,7 +19,7 @@ if [ "x$append" = x ]; then
 	test -f $output && rm -f $output
 fi
 
-if [ "$#" == 0 ]; then
+if [ "$#" = 0 ]; then
 	cat $source >> $output
 else
 	sed "$@" $source >> $output
