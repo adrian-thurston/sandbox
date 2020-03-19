@@ -9,10 +9,13 @@ extern "C" {
 
 struct rust_struct;
 
-void hello_from_rust();
+void hello_from_rust_1();
+struct rust_struct *alloc_struct_1();
+void free_struct_1( struct rust_struct * );
 
-struct rust_struct *alloc_struct();
-void free_struct( struct rust_struct * );
+void hello_from_rust_2();
+struct rust_struct *alloc_struct_2();
+void free_struct_2( struct rust_struct * );
 
 #ifdef __cplusplus
 }

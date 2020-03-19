@@ -9,15 +9,15 @@ pub struct Struct
 }
 
 #[no_mangle]
-pub unsafe extern "C" fn hello_from_rust()
+pub unsafe extern "C" fn hello_from_rust_1()
 {
-    println!( "hello from rust, my friends" );
+    println!( "hello from rust1, my friends" );
 }
 
 static STATIC_THING: u64 = 1;
 
 #[no_mangle]
-pub unsafe extern "C" fn alloc_struct() -> Box<Struct>
+pub unsafe extern "C" fn alloc_struct_1() -> Box<Struct>
 {
 	println!( "static object at {:p}", &STATIC_THING as *const _ as *const _ );
     println!( "allocating a struct from rust and returning it" );
@@ -30,7 +30,7 @@ pub unsafe extern "C" fn alloc_struct() -> Box<Struct>
 }
 
 #[no_mangle]
-pub extern "C" fn free_struct(_: Option<Box<Struct>>)
+pub extern "C" fn free_struct_1(_: Option<Box<Struct>>)
 {
     println!( "freeing struct from rust" );
 	println!( "static object at {:p}", &STATIC_THING as *const _ as *const _ );
