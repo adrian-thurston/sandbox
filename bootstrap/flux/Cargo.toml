@@ -6,9 +6,10 @@ edition = "2018"
 
 [lib]
 crate-type = ["rlib", "staticlib", "cdylib"]
+path = "lib.rs"
 
 [dependencies]
-core = { path = "../core" }
+core = { path = "core" }
 
 [build-dependencies]
-core = { path = "../core" }
+core = { path = "core" }
