@@ -1,15 +1,14 @@
 use flux;
 
-fn main()
-{
+fn main() {
     println!("hello from main");
 
-	flux::hello_from_flux();
-	flux::hello_from_core();
+    flux::hello_from_flux();
+    flux::hello_from_core();
 
-	let bc = flux::alloc_struct_core();
+    let bc = flux::alloc_struct_core();
 
-	println!("main: {:?}", bc);
+    println!("main: {:?}", bc);
 
-	flux::print_core(bc);
+    flux::print_core(bc);
 }

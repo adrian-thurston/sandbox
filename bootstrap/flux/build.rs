@@ -1,8 +1,8 @@
-use std::fs::File;
-use std::path::PathBuf;
-use std::io::prelude::*;
 use std::env;
+use std::fs::File;
 use std::io;
+use std::io::prelude::*;
+use std::path::PathBuf;
 
 #[derive(Debug)]
 struct Error {
@@ -25,16 +25,11 @@ impl From<io::Error> for Error {
     }
 }
 
-fn main() -> Result<(), Error>
-{
-	let dir = PathBuf::from( env::var("OUT_DIR")? );
-
-	let path = dir.join("string.data");
-
+fn main() -> Result<(), Error> {
+    let dir = PathBuf::from(env::var("OUT_DIR")?);
+    let path = dir.join("string.data");
     let mut file = File::create(path)?;
-
-    file.write_all(b"flux made these bytes")?;
-
+    let bytes = core::get_bytes();
+    file.write_all(&bytes)?;
     Ok(())
 }
-
