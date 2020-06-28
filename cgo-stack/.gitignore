@@ -1,0 +1,3 @@
+/cgo-stack
+/mylib/mylib.o
+/wrapper/libmylib.a
